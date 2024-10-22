@@ -1,4 +1,3 @@
-// src/firebase.service.ts
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { google } from 'googleapis';
