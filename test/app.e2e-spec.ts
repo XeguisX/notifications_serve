@@ -19,6 +19,9 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        // Verifica que la respuesta tenga una estructura con access_token
+        expect(res.body).toHaveProperty('access_token');
+      });
   });
 });
