@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { google } from 'googleapis';
+import axios from 'axios';
 
 const MESSAGING_SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const SCOPES = [MESSAGING_SCOPE];
+const FCM_URL = 'https://fcm.googleapis.com/v1/projects/flutter-notificaciones-ebd00/messages:send';
 
 @Injectable()
 export class FirebaseService {
@@ -33,5 +35,26 @@ export class FirebaseService {
                 resolve(tokens.access_token);
             });
         });
+    }
+
+    async sendPushNotification(accessToken: string, payload: any): Promise<any> {
+        try {
+            const response = await axios.post(
+                FCM_URL,
+                {
+                    message: payload.message,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                },
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Error sending notification', error.response?.data || error.message);
+            throw new Error('Failed to send push notification');
+        }
     }
 }
